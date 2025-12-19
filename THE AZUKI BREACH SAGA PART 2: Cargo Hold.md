@@ -2,6 +2,12 @@
 
 ![Threat Hunt](https://img.shields.io/badge/Threat_Hunt-Active-red) ![KQL](https://img.shields.io/badge/KQL-Advanced-blue) ![MITRE%20ATT%26CK](https://img.shields.io/badge/MITRE-ATT%26CK-orange)
 
+**Analyst:** Tiernan Falcon  
+**Date:** December 6th, 2025   
+**Source:** CyberRange SOC Challenge   
+**System:** azuki-fileserver01   
+**Platform:** Microsoft Defender for Endpoint
+
 ---
 
 ## 🎯 Skills Demonstrated
@@ -565,6 +571,4 @@ This hunt reinforced the importance of monitoring "Living off the Land" binaries
 
 ---
 
-**Analyst:** Tiernan Falcon  
-**Date:** December 2025  
-**Platform:** Microsoft Defender for Endpoint
+
