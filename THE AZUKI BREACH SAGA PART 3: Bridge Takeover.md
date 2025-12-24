@@ -45,7 +45,7 @@
 
 ## 🛡️ Executive Summary
 
-**Incident Date:** November 24-25, 2025  
+**Incident Date:** November 25, 2025  
 **Analyst:** Tiernan Falcon  
 **Tools Used:** Microsoft Defender for Endpoint (MDE), KQL (Kusto Query Language), Base64Decode
 
@@ -59,28 +59,27 @@ The investigation confirmed that the attacker moved laterally via RDP from the p
 
 ---
 
-<!-- ## ⏱️ Attack Timeline  need to fix 
+## ⏱️ Attack Timeline
 
-| Timestamp | Phase | Activity |
-|-----------|-------|----------|
-| **2025-11-25T04:06:52.7572947Z** | Lateral Movement | RDP pivot from compromised file server (`10.1.0.204`) to `azuki-adminpc` using `yuki.tanaka` credentials |
-| **2025-11-25T04:21:11.7917432Z** | Execution | Downloaded fake Windows update `KB5044273-x64.7z` from `litter.catbox.moe` containing C2 payloads |
-| **Nov 24, 2025** | Execution | Extracted password-protected archive containing `meterpreter.exe` using 7-Zip |
-| **Nov 24, 2025** | Persistence | Deployed Meterpreter C2 implant creating named pipe `\Device\NamedPipe\msf-pipe-5902` |
-| **Nov 24, 2025** | Persistence | Created backdoor admin account `yuki.tanaka2` via Base64-encoded PowerShell command |
-| **Nov 24, 2025** | Persistence | Escalated backdoor account to Administrators group via encoded command |
-| **Nov 25, 2025** | Discovery | Enumerated RDP sessions using `qwinsta.exe` |
-| **Nov 25, 2025** | Discovery | Performed domain trust enumeration via `nltest.exe /domain_trusts /all_trusts` |
-| **Nov 25, 2025** | Discovery | Mapped network connections using `netstat -ano` |
-| **Nov 25, 2025** | Discovery | Hunted for KeePass databases using `where /r C:\Users *.kdbx` |
-| **Nov 25, 2025** | Discovery | Located `OLD-Passwords.txt` and `KeePass-Master-Password.txt` in user directories |
-| **Nov 25, 2025** | Credential Access | Downloaded credential theft tool `m-temp.7z` (Mimikatz) from `litter.catbox.moe` |
-| **Nov 25, 2025** | Credential Access | Executed renamed Mimikatz (`m.exe`) to dump Chrome browser credentials via DPAPI |
-| **Nov 25, 2025** | Collection | Staged data in hidden directory `C:\ProgramData\Microsoft\Crypto\staging` |
-| **Nov 25, 2025** | Collection | Used `Robocopy.exe` to aggregate Banking, Financial, Tax, and Contract documents |
-| **Nov 25, 2025** | Collection | Created 8 compressed archives of sensitive data |
-| **Nov 25, 2025** | Exfiltration | Exfiltrated archives to `store1.gofile.io` (45.112.123.227) via `curl.exe` POST requests |
--->
+| Timestamp (UTC) | Phase | Activity |
+|-----------------|-------|----------|
+| **2025-11-25T04:06:52Z** | Lateral Movement | RDP pivot from compromised file server (`10.1.0.204`) to `azuki-adminpc` using `yuki.tanaka` credentials |
+| **2025-11-25T04:08:58Z** | Discovery | Enumerated RDP sessions using `qwinsta.exe` |
+| **2025-11-25T04:09:25Z** | Discovery | Performed domain trust enumeration via `nltest.exe /domain_trusts /all_trusts` |
+| **2025-11-25T04:10:07Z** | Discovery | Mapped network connections using `netstat -ano` |
+| **2025-11-25T04:13:45Z** | Discovery | Hunted for KeePass databases using `where /r C:\Users *.kdbx` |
+| **2025-11-25T04:15:57Z** | Discovery | Located `OLD-Passwords.txt` in user directories |
+| **2025-11-25T04:21:11Z** | Execution | Downloaded fake Windows update `KB5044273-x64.7z` from `litter.catbox.moe` containing C2 payloads |
+| **2025-11-25T04:21:32Z** | Execution | Extracted password-protected archive containing `meterpreter.exe` using 7-Zip |
+| **2025-11-25T04:21:33Z** | Persistence | Deployed Meterpreter C2 implant (`meterpreter.exe` created) |
+| **2025-11-25T04:24:35Z** | Command & Control | Named pipe `\Device\NamedPipe\msf-pipe-5902` created for C2 communication |
+| **2025-11-25T04:37:03Z** | Collection | Staged data in hidden directory `C:\ProgramData\Microsoft\Crypto\staging` |
+| **2025-11-25T04:39:16Z** | Collection | Used `Robocopy.exe` to copy Banking documents to staging directory |
+| **2025-11-25T04:41:51Z** | Exfiltration | First archive (`credentials.tar.gz`) exfiltrated to `store1.gofile.io` via `curl.exe` POST |
+| **2025-11-25T04:51:08Z** | Persistence | Created backdoor admin account `yuki.tanaka2` via Base64-encoded PowerShell command |
+| **2025-11-25T05:55:34Z** | Credential Access | Downloaded credential theft tool `m-temp.7z` (Mimikatz) from `litter.catbox.moe` |
+| **2025-11-25T05:55:44Z** | Credential Access | Extracted Mimikatz as `m.exe` |
+| **2025-11-25T05:55:54Z** | Credential Access | Executed renamed Mimikatz (`m.exe`) to dump Chrome browser credentials via DPAPI |
 ---
 
 ## 🗺️ Attack Lifecycle (MITRE ATT&CK Mapping)
@@ -599,7 +598,7 @@ DeviceFileEvents
 **Answer:** `C:\ProgramData\Microsoft\Crypto\staging`
 
 **Thought Process:**  
-I tracked where `Robocopy` was moving files to, and where compression tools like `7z` or `tar` were creating archives, beginning at 2025-11-25T04:39:16.4900877Z. The attacker chose a somewhat legitimate-sounding system path to hide their staging area.
+I tracked where `Robocopy` was moving files to, and where compression tools like `7z` or `tar` were creating archives, beginning at 2025-11-25T04:37:03.0075513Z. The attacker chose a somewhat legitimate-sounding system path to hide their staging area.
 
 **KQL Query:**
 
@@ -620,7 +619,7 @@ DeviceFileEvents
 **Answer:** `"Robocopy.exe" C:\Users\yuki.tanaka\Documents\Banking C:\ProgramData\Microsoft\Crypto\staging\Banking /E /R:1 /W:1 /NP`
 
 **Thought Process:**  
-I searched for `robocopy` or `xcopy` commands targeting the staging directory found in Flag 17 and found a banking one at 2025-11-25T04:37:03.0075513Z. The `/E` flag copies subdirectories including empty ones, indicating comprehensive data collection.
+I searched for `robocopy` or `xcopy` commands targeting the staging directory found in Flag 17 and found a banking one at 2025-11-25T04:39:16.4900877Z. The `/E` flag copies subdirectories including empty ones, indicating comprehensive data collection.
 
 **KQL Query:**
 
@@ -808,7 +807,7 @@ This scenario demonstrated a high level of attacker sophistication and intent. U
 
 2. **Named Pipes for C2:** Meterpreter's use of named pipes for command and control communication demonstrates advanced post-exploitation techniques. Monitoring `NamedPipeEvent` can reveal sophisticated malware.
 
-3. **LOLBins Everywhere:** The attacker used native Windows tools (`curl`, `certutil`, `robocopy`, `tar`, `7z`) extensively. This "Living off the Land" approach bypasses traditional signature-based detection.
+3. **LOLBins Everywhere:** The attacker used native Windows tools (`curl`, `robocopy`, `tar`, `7z`) extensively. This "Living off the Land" approach bypasses traditional signature-based detection.
 
 4. **Credential Theft Focus:** The explicit targeting of KeePass databases, browser credentials, and password text files indicates this was a targeted operation, not opportunistic malware.
 
