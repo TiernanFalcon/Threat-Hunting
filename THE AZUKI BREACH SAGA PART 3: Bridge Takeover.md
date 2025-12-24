@@ -7,7 +7,7 @@
 **Source:** CyberRange SOC Challenge  
 **System:** azuki-adminpc  
 **Platform:** Microsoft Defender for Endpoint
-
+ 
 ---
 
 ## 🎯 Skills Demonstrated
