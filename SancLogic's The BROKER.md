@@ -2267,8 +2267,8 @@ Despite the log clearing and fileless execution, the MDE telemetry layer preserv
 | Lateral Movement    | T1021.003     | Remote Services: Distributed Component Object Model          | 🟠 Medium   |
 | Lateral Movement    | T1021.002     | Remote Services: SMB/Windows Admin Shares                    | 🟠 Medium   |
 
-> 🔴 **High** — Directly observed in telemetry, confirmed with evidence
-> 🟠 **Medium** — Inferred from correlated behavior; attempted but outcome unconfirmed or indirectly evidenced
+> 🔴 **High** — Directly observed in telemetry, confirmed with evidence\
+> 🟠 **Medium** — Inferred from correlated behavior; attempted but outcome unconfirmed or indirectly evidenced\
 > 🟡 **Low** — Suspected based on pattern, not directly confirmed
 
 The ATT&CK coverage across this investigation is heavily weighted toward **Defense Evasion**, **Persistence**, and **Credential Access**: the three tactic areas where the attacker invested the most deliberate effort. Defense Evasion techniques appear at every major phase, from the double-extension masquerade at delivery through LOLBin-only tool acquisition, log clearing at departure, and reflective in-memory execution for the final credential harvest. The breadth of persistence mechanisms (three independent methods across three hosts) and the depth of credential targeting (registry hives plus browser DPAPI) reflect an attacker who was not conducting a rapid smash-and-grab; they were establishing long-term residency with layered fallback paths.
