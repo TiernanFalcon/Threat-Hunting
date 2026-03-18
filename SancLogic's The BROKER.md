@@ -29,13 +29,13 @@
 
 ## Executive Summary
 
-The BROKER documents a targeted, multi-stage intrusion against Ashford Sterling Recruitment in which a threat actor delivered a masqueraded payload via social engineering, established persistent command-and-control, harvested credentials, and moved laterally across the environment to access and stage sensitive financial data. The attack was conducted with disciplined tradecraft — favoring legitimate Windows utilities, commercial remote access tooling, and living-off-the-land binaries over custom malware at every stage of the kill chain.
+The BROKER documents a targeted, multi-stage intrusion against Ashford Sterling Recruitment in which a threat actor delivered a masqueraded payload via social engineering, established persistent command-and-control, harvested credentials, and moved laterally across the environment to access and stage sensitive financial data. The attack was conducted with disciplined tradecraft, favoring legitimate Windows utilities, commercial remote access tooling, and living-off-the-land binaries over custom malware at every stage of the kill chain.
 
-The intrusion began with the execution of a double-extension file masquerading as a job applicant's CV. Once on the initial endpoint (`as-pc1`), the attacker established C2 communication to attacker-controlled infrastructure and retrieved additional payloads from a separate staging domain. Credentials were extracted from the registry using native tools and saved locally before further exploitation. The attacker then performed targeted discovery to confirm their position and map the environment before deploying AnyDesk — a legitimate remote administration tool — across all three hosts in the environment as a durable persistence mechanism.
+The intrusion began with the execution of a double-extension file masquerading as a job applicant's CV. Once on the initial endpoint (`as-pc1`), the attacker established C2 communication to attacker-controlled infrastructure and retrieved additional payloads from a separate staging domain. Credentials were extracted from the registry using native tools and saved locally before further exploitation. The attacker then performed targeted discovery to confirm their position and map the environment before deploying AnyDesk, a legitimate remote administration tool, across all three hosts in the environment as a durable persistence mechanism.
 
-Lateral movement from `as-pc1` through `as-pc2` to the file server `as-srv` was achieved using RDP after earlier attempts via `wmic.exe` and `psexec.exe` failed. A previously disabled account, `david.mitchell`, was reactivated to facilitate authenticated movement. On the file server, the attacker accessed a sensitive financial document — BACS payment records — opened it for editing, and archived the contents for staging. A scheduled task and a backdoor local account were created to ensure access survived remediation. Before departing, the attacker cleared Windows event logs (`Security`, `System`, and `Application`) and used reflective code loading to execute a browser credential theft tool in memory, injecting it into a legitimate host process to avoid detection.
+Lateral movement from `as-pc1` through `as-pc2` to the file server `as-srv` was achieved using RDP after earlier attempts via `wmic.exe` and `psexec.exe` failed. A previously disabled account, `david.mitchell`, was reactivated to facilitate authenticated movement. On the file server, the attacker accessed a sensitive financial document, BACS payment records, opened it for editing, and archived the contents for staging. A scheduled task and a backdoor local account were created to ensure access survived remediation. Before departing, the attacker cleared Windows event logs (`Security`, `System`, and `Application`) and used reflective code loading to execute a browser credential theft tool in memory, injecting it into a legitimate host process to avoid detection.
 
-This investigation was conducted exclusively through MDE and Sentinel telemetry using KQL Advanced Hunting queries, with no direct endpoint access, memory forensics, or packet capture available. All findings were reconstructed through behavioral correlation of process execution, file system, network, and logon event data. The tradecraft observed throughout — LOLBin abuse, legitimate tool repurposing, account manipulation, and in-memory execution — reflects a deliberate effort to blend into normal enterprise activity and resist forensic recovery.
+This investigation was conducted exclusively through MDE and Sentinel telemetry using KQL Advanced Hunting queries, with no direct endpoint access, memory forensics, or packet capture available. All findings were reconstructed through behavioral correlation of process execution, file system, network, and logon event data. The tradecraft observed throughout, including LOLBin abuse, legitimate tool repurposing, account manipulation, and in-memory execution, reflects a deliberate effort to blend into normal enterprise activity and resist forensic recovery.
 
 ## Hunt Narrative
 
@@ -43,7 +43,7 @@ This investigation was conducted exclusively through MDE and Sentinel telemetry 
 
 Right away, `daniel_richardson_cv.pdf.exe` stands out as a filename generating significant suspicious activity. Pulling `DeviceProcessEvents`, we captured its SHA256 hash (`48b97fd9...`) and confirmed it was executed via a direct user double-click through `explorer.exe`. The double-extension naming exploited a classic Windows default: with "hide known file extensions" enabled, a victim in a recruitment firm sees only `daniel_richardson_cv.pdf` and has no indication they are about to execute a binary.
 
-We then queried `DeviceNetworkEvents` originating from `as-pc1` to understand what the malware was doing after execution. The outbound connections to `cdn.cloud-endpoint.net` were initiated directly by `daniel_richardson_cv.pdf.exe` itself; the payload acted as the primary C2 agent for the full duration of the attack, not merely a dropper. A second domain, `sync.cloud-endpoint.net`, handled additional payload staging. Looking at the timeline just after 03:58Z, we can see the attacker getting the lay of the land: they ran `whoami.exe` to confirm their privileges, `net view` to spot network shares, and queried the local `administrators` group. Shortly after, operating as `sophie.turner`, they used `reg.exe save` to dump the `SAM` and `SYSTEM` hives straight to `C:\Users\Public` — classic credential harvesting using nothing but a native Windows utility.
+We then queried `DeviceNetworkEvents` originating from `as-pc1` to understand what the malware was doing after execution. The outbound connections to `cdn.cloud-endpoint.net` were initiated directly by `daniel_richardson_cv.pdf.exe` itself; the payload acted as the primary C2 agent for the full duration of the attack, not merely a dropper. A second domain, `sync.cloud-endpoint.net`, handled additional payload staging. Looking at the timeline just after 03:58Z, we can see the attacker getting the lay of the land: they ran `whoami.exe` to confirm their privileges, `net view` to spot network shares, and queried the local `administrators` group. Shortly after, operating as `sophie.turner`, they used `reg.exe save` to dump the `SAM` and `SYSTEM` hives straight to `C:\Users\Public`, a classic credential harvesting using nothing but a native Windows utility.
 
 **Persistence**
 
@@ -62,6 +62,7 @@ With `david.mitchell` authenticated to `as-srv`, we queried DeviceFileEvents on 
 **Anti-Forensics and Memory**
 
 Before logging off, the attacker cleaned up. We spotted `wevtutil.exe cl` clearing the `Security`, `System`, and `Application` logs. Finding the credential theft took longer. The instinct was to look for the injection in `DeviceProcessEvents`, but nothing there explained how `SharpChrome` was operating inside `notepad.exe` with no corresponding file creation event. Pivoting to `DeviceEvents` and enumerating the distinct `ActionType` values present in the final minutes of the intrusion surfaced `ClrUnbackedModuleLoaded`, an event that fires specifically when a .NET assembly is loaded entirely in memory with no file backing it on disk. At 05:09:53Z, the payload spawned `notepad.exe ""`, pre-positioning a trusted, signed Windows process as an injection host for the final operation; the blank window a secondary decoy for any watching user. Seconds later, `SharpChrome` was reflectively loaded directly into that `notepad.exe` process, harvesting saved browser credentials without ever touching disk. 
+
 
 ---
 
@@ -155,7 +156,7 @@ All findings were reconstructed through behavioral correlation of process execut
 
 ## Attack Timeline
 
-> **Analyst Note:** By tracking `InitiatingProcessFileName` across the full intrusion window, we confirmed that `daniel_richardson_cv.pdf.exe` remained active as the primary C2 agent for the entire operation — over an hour — before finally spawning `notepad.exe` at 05:09:53Z as a dedicated injection host for the final credential theft. This is not a dropper that terminates after delivery; it is a persistent agent.
+> **Analyst Note:** By tracking `InitiatingProcessFileName` across the full intrusion window, we confirmed that `daniel_richardson_cv.pdf.exe` remained active as the primary C2 agent for the entire operation (over an hour) before finally spawning `notepad.exe` at 05:09:53Z as a dedicated injection host for the final credential theft. This is not a dropper that terminates after delivery; it is a persistent agent.
 
 | Timestamp (UTC)      | Tactic                | Action                                                                               | Key Artifact                        |
 |----------------------|-----------------------|--------------------------------------------------------------------------------------|-------------------------------------|
@@ -703,7 +704,7 @@ DeviceProcessEvents
 **Analysis**
 `C:\Users\Public` is a deliberate choice. Unlike a user-specific temp directory, this path is accessible to any local account, making it a useful handoff point between different user contexts within the same compromise. If the attacker needs to access the hive files under a different account later (e.g., during lateral movement), they can retrieve them from this shared location without needing to modify permissions. The use of a legitimate Windows directory also reduces the likelihood of detection from file path-based monitoring rules that focus on unusual system or temp paths.
 
-> 💡 *Newer hunters: notice that Flags 9, 10, and 11 are all answered by a single query. When a flag asks "what account", "what directory", and "what hives" about the same event, one well-projected query covers all three — project every relevant column up front rather than running three separate searches.*
+> 💡 *Newer hunters: notice that Flags 9, 10, and 11 are all answered by a single query. When a flag asks "what account", "what directory", and "what hives" about the same event, one well-projected query can cover all three. Project every relevant column up front instead of running three separate searches.*
 
 **MITRE ATT&CK Mapping**
 
@@ -1170,7 +1171,7 @@ DeviceFileEvents
 **Analysis**
 Deploying AnyDesk to multiple hosts in the environment, not just the initial foothold machine, demonstrates deliberate intent to own the environment rather than maintain a single access point. If `as-pc1` were reimaged and `sophie.turner`'s credentials rotated, the attacker would still have authenticated access to `as-pc2` and `as-srv`. This is the hallmark of an attacker who plans for partial detection.
 
-> 💡 *Newer hunters: `make_set()` in KQL returns a deduplicated dynamic array — here it collapses every `DeviceName` value into a single clean list per filename, so you see all affected hosts in one row rather than one row per event. Worth adding to your summarize toolkit.*
+> 💡 *Newer hunters: `make_set()` in KQL returns a deduplicated dynamic array. Here, it collapses every `DeviceName` value into a single clean list per filename, so you see all affected hosts in one row rather than one row per event. It's a useful function worth adding to your summarize toolkit.*
 
 **MITRE ATT&CK Mapping**
 
@@ -1220,7 +1221,7 @@ DeviceProcessEvents
 **Analysis**
 Confirming failure requires two steps: identifying the attempts, then verifying no corresponding activity appeared on the target side. `wmic.exe /node:` and `psexec.exe \\host` are two of the most commonly used lateral movement techniques in post-exploitation frameworks. Their failure indicates that host-based firewall rules or security policy blocked the required ports: DCOM for WMI remote execution and SMB admin shares for PsExec. The fact that the attacker tried both before pivoting suggests they were working through a methodical checklist. For defenders, the attempted-but-failed execution events are themselves valuable detection signals regardless of outcome.
 
-> 💡 *Newer hunters: absence of evidence is evidence — but you have to go looking for it. A failed lateral movement attempt won't produce a "failure" event on the source machine. You confirm the failure by pivoting to the target (`as-pc2`) and checking for `WmiPrvSE` child processes or `LogonFailed` events during the attempt window. If neither exists, the attempt didn't land.*
+> 💡 *Newer hunters: absence of evidence is evidence, but you have to go looking for it. A failed lateral movement attempt won't produce a "failure" event on the source machine. You confirm the failure by pivoting to the target (`as-pc2`) and checking for `WmiPrvSE` child processes or `LogonFailed` events during the attempt window. If neither exists, the attempt didn't land.*
 
 **MITRE ATT&CK Mapping**
 
