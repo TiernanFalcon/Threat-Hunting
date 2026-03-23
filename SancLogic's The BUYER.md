@@ -224,11 +224,12 @@ What ransomware group was responsible for the encryption event?
 
 **Evidence Used**
 
-```
+
 <img width="695" height="402" alt="image" src="https://github.com/user-attachments/assets/b2312d93-5b52-44bc-852b-3c1389469933" />
+<br>
 
 
-```
+---
 
 **Key Observations**
 - The ransom note identified the actor by name as Akira, removing any ambiguity about family attribution from the outset.
@@ -260,12 +261,13 @@ What TOR negotiation address was provided in the note?
 
 **Evidence Used**
 
-```
+
 
 <img width="715" height="123" alt="image" src="https://github.com/user-attachments/assets/7351e5f9-58c2-4978-a490-91a275ccdfd8" />
+<br>
 
 
-```
+---
 
 **Key Observations**
 - The ransom note contained a `.onion` TOR address providing the victim with a channel for operator contact.
@@ -297,11 +299,12 @@ What unique victim ID was assigned to Ashford Sterling Recruitment?
 
 **Evidence Used**
 
-```
+
 <img width="625" height="104" alt="image" src="https://github.com/user-attachments/assets/d670d676-f9d2-4217-b881-aa66f0c2b07f" />
+<br>
 
 
-```
+---
 
 **Key Observations**
 - The ransom note assigned Ashford Sterling Recruitment the victim identifier `813R-QWJM-XKIJ`, consistent with Akira's per-victim tracking convention.
@@ -333,12 +336,12 @@ What extension was added to encrypted files?
 
 **Evidence Used**
 
-```
-
-![Akira](https://user-images.githubusercontent.com/12345678/985ca788-bca8-46bc-bc11-e20b7a12eec9.png)
 
 
-```
+<img width="616" height="116" alt="image" src="https://github.com/user-attachments/assets/3c5de324-7aa6-4dcd-b874-fe4b9b267690" />
+<br>
+
+---
 
 **Key Observations**
 - Encrypted files on the affected systems had `.akira` appended, confirming the extension as the post-encryption file marker for this intrusion.
