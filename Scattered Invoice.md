@@ -259,6 +259,7 @@ SigninLogs
 | sort by TimeGenerated asc
 | take 5
 ```
+<img width="1320" height="580" alt="image" src="https://github.com/user-attachments/assets/e5d8e589-979b-49d2-8b15-b21678a88bf2" />
 
 ---
 
@@ -276,6 +277,7 @@ SigninLogs
 | sort by TimeGenerated asc
 | take 5
 ```
+<img width="1597" height="558" alt="image" src="https://github.com/user-attachments/assets/0b6b58a6-2fc6-49da-a982-bd46d661fcac" />
 
 ---
 
@@ -293,6 +295,7 @@ SigninLogs
 | sort by TimeGenerated asc
 | take 5
 ```
+<img width="1570" height="556" alt="image" src="https://github.com/user-attachments/assets/91fce09b-d086-4aa0-963b-b949d63c2a4c" />
 
 ---
 
@@ -311,6 +314,7 @@ SigninLogs
 | sort by TimeGenerated asc
 | take 5
 ```
+<img width="2158" height="616" alt="image" src="https://github.com/user-attachments/assets/2ddfdfe1-c740-4dd8-aa6d-ca984d855102" />
 
 ---
 
@@ -330,6 +334,11 @@ SigninLogs
 | sort by TimeGenerated asc
 ```
 
+<img width="1878" height="552" alt="image" src="https://github.com/user-attachments/assets/c077d4d5-2580-4e71-9f0e-9c7d34240113" />
+
+<img width="1891" height="922" alt="image" src="https://github.com/user-attachments/assets/80065c06-de36-4ae9-9417-65eee5858213" />
+
+
 ---
 
 ### Q6 — Phase 01: MFA Bypass | Application Accessed
@@ -347,6 +356,7 @@ SigninLogs
 | project TimeGenerated, IPAddress, AppDisplayName
 | sort by TimeGenerated asc
 ```
+<img width="1355" height="641" alt="image" src="https://github.com/user-attachments/assets/207c9136-6bc7-45ef-b896-bbc205ff708f" />
 
 ---
 
@@ -365,6 +375,7 @@ SigninLogs
 | project TimeGenerated, IPAddress, DeviceDetail
 | sort by TimeGenerated asc
 ```
+<img width="1598" height="566" alt="image" src="https://github.com/user-attachments/assets/e064f87e-2ff3-480f-ba92-c682ae340e07" />
 
 ---
 
@@ -383,6 +394,7 @@ SigninLogs
 | project TimeGenerated, IPAddress, DeviceDetail.browser
 | sort by TimeGenerated asc
 ```
+<img width="1200" height="531" alt="image" src="https://github.com/user-attachments/assets/60438a2d-1c9f-4907-b2ab-0366526e6dff" />
 
 ---
 
@@ -399,6 +411,7 @@ CloudAppEvents
 | project TimeGenerated, ActionType
 | sort by TimeGenerated asc
 ```
+<img width="1270" height="400" alt="image" src="https://github.com/user-attachments/assets/9972ee6d-d2dc-407f-accc-458d1d837565" />
 
 ---
 
@@ -415,6 +428,7 @@ CloudAppEvents
 | project TimeGenerated, ActionType
 | sort by TimeGenerated asc
 ```
+<img width="1189" height="466" alt="image" src="https://github.com/user-attachments/assets/2fc8b5d3-84b3-430d-a40a-dc26317636cb" />
 
 ---
 
@@ -432,6 +446,7 @@ CloudAppEvents
 | project TimeGenerated, ActionType, RawEventData.Parameters[3].Name
 | sort by TimeGenerated asc
 ```
+<img width="1211" height="411" alt="image" src="https://github.com/user-attachments/assets/a1e5596d-c58a-471e-8920-9fe6de245b3a" />
 
 ---
 
@@ -449,6 +464,7 @@ CloudAppEvents
 | project TimeGenerated, ActionType, RawEventData.Parameters[2]
 | sort by TimeGenerated asc
 ```
+<img width="1278" height="472" alt="image" src="https://github.com/user-attachments/assets/9b6dae39-7afe-455c-8118-df5508627258" />
 
 ---
 
@@ -466,6 +482,7 @@ CloudAppEvents
 | project TimeGenerated, ActionType, RawEventData.Parameters[4]
 | sort by TimeGenerated asc
 ```
+<img width="1416" height="469" alt="image" src="https://github.com/user-attachments/assets/fc69332a-0edc-4dac-b6f3-d7595e3285c3" />
 
 ---
 
@@ -483,6 +500,7 @@ CloudAppEvents
 | project TimeGenerated, ActionType, RawEventData.Parameters[5]
 | sort by TimeGenerated asc
 ```
+<img width="1267" height="450" alt="image" src="https://github.com/user-attachments/assets/2f873a4e-de75-4c5f-b065-92f81b1ff0ad" />
 
 ---
 
@@ -500,6 +518,7 @@ CloudAppEvents
 | project TimeGenerated, ActionType, RawEventData.Parameters[2]
 | sort by TimeGenerated asc
 ```
+<img width="1203" height="644" alt="image" src="https://github.com/user-attachments/assets/93bd5614-ec0e-47ee-914f-b7b679ca98ad" />
 
 ---
 
@@ -517,6 +536,7 @@ CloudAppEvents
 | project TimeGenerated, ActionType, RawEventData.Parameters[3]
 | sort by TimeGenerated asc
 ```
+<img width="1656" height="683" alt="image" src="https://github.com/user-attachments/assets/66b07751-c3d7-49d9-82fe-e1032c54e0f9" />
 
 ---
 
@@ -533,6 +553,7 @@ EmailEvents
 | where SenderIPv4 =~ "205.147.16.190"
 | project TimeGenerated, SenderFromAddress, RecipientEmailAddress
 ```
+<img width="1233" height="395" alt="image" src="https://github.com/user-attachments/assets/c917df8e-cd19-4aa3-90d1-4a5e2f2d3045" />
 
 ---
 
@@ -549,6 +570,7 @@ EmailEvents
 | where SenderIPv4 =~ "205.147.16.190"
 | project TimeGenerated, SenderFromAddress, RecipientEmailAddress, Subject
 ```
+<img width="1545" height="444" alt="image" src="https://github.com/user-attachments/assets/b9194599-a332-499e-8488-7c2eae8bc948" />
 
 ---
 
@@ -565,6 +587,7 @@ EmailEvents
 | where SenderIPv4 =~ "205.147.16.190"
 | project TimeGenerated, SenderFromAddress, RecipientEmailAddress, Subject, EmailDirection
 ```
+<img width="1514" height="433" alt="image" src="https://github.com/user-attachments/assets/f5b4df96-8414-4f95-99f6-6e2acd9bdc8b" />
 
 ---
 
@@ -581,6 +604,7 @@ EmailEvents
 | where SenderIPv4 =~ "205.147.16.190"
 | project TimeGenerated, SenderFromAddress, RecipientEmailAddress, Subject, SenderIPv4
 ```
+<img width="1477" height="411" alt="image" src="https://github.com/user-attachments/assets/ef0f351d-c069-4e45-90e4-2395fb5932ce" />
 
 ---
 
@@ -598,6 +622,7 @@ CloudAppEvents
 | project TimeGenerated, ActionType, Application
 | sort by TimeGenerated asc
 ```
+<img width="1269" height="453" alt="image" src="https://github.com/user-attachments/assets/e57e79de-21a3-48c8-8864-ee76ed8eec16" />
 
 ---
 
@@ -614,6 +639,7 @@ SigninLogs
 | where ResultSignature =~ "success"
 | distinct AppDisplayName
 ```
+<img width="1308" height="583" alt="image" src="https://github.com/user-attachments/assets/ea04586a-83db-4782-ae98-c4ac594dd982" />
 
 ---
 
@@ -638,6 +664,9 @@ SigninLogs
 | where ResultSignature =~ "success"
 | project SessionId
 ```
+<img width="1198" height="511" alt="image" src="https://github.com/user-attachments/assets/3abc8763-2bc3-40e1-9a9d-d1bafae03a2e" />
+
+<img width="1239" height="489" alt="image" src="https://github.com/user-attachments/assets/61e77403-698a-49b9-91c6-040f642c1558" />
 
 ---
 
@@ -654,6 +683,7 @@ SigninLogs
 | where ResultSignature =~ "success"
 | project ConditionalAccessStatus
 ```
+<img width="1231" height="491" alt="image" src="https://github.com/user-attachments/assets/37451d75-0068-4564-9b3d-354179f150e0" />
 
 ---
 
@@ -664,6 +694,10 @@ SigninLogs
 MITRE ATT&CK T1621 (Multi-Factor Authentication Request Generation) describes the technique of sending repeated MFA push notifications to wear down the target user until they approve. The technique exploits the human tendency to approve prompts to stop unwanted notifications rather than treating repeated prompts as an attack signal.
 
 *Tactic: Credential Access // Technique: T1621*
+<img width="1959" height="123" alt="image" src="https://github.com/user-attachments/assets/de28fa89-8457-44f9-96ce-5b8dc03baa5d" />
+<img width="2170" height="681" alt="image" src="https://github.com/user-attachments/assets/eb61dbc2-4091-4d5f-b4e7-4b79dbc9fdd6" />
+
+
 
 ---
 
@@ -674,6 +708,7 @@ MITRE ATT&CK T1621 (Multi-Factor Authentication Request Generation) describes th
 MITRE ATT&CK T1564.008 (Hide Artifacts: Email Hiding Rules) describes the use of email client rules to move, delete, or otherwise manage messages in a way that hides attacker activity from the account owner. Both inbox rules created in this incident map directly to this sub-technique: one for collection, one for suppression of detection notifications.
 
 *Tactic: Defense Evasion // Technique: T1564.008*
+<img width="2147" height="1013" alt="image" src="https://github.com/user-attachments/assets/9da91665-9e07-4c30-bb1b-2fed0ab83189" />
 
 ---
 
@@ -682,6 +717,10 @@ MITRE ATT&CK T1564.008 (Hide Artifacts: Email Hiding Rules) describes the use of
 **Answer:** `infostealer`
 
 The attacker already had Smith's valid password before the MFA fatigue attack began. Scattered Spider is known to purchase credentials from infostealer logs sold on underground marketplaces. Infostealer malware infects endpoints and harvests saved passwords, session tokens, browser data, and credentials from password managers, packaging them into logs sold to downstream threat actors. This means the initial compromise vector was not the organisation's infrastructure at all; it was a personal or shared device infected with commodity malware prior to the attack.
+
+<img width="1536" height="92" alt="image" src="https://github.com/user-attachments/assets/e42c3dea-2970-4dc4-adbd-62e4608bd167" />
+<img width="1063" height="234" alt="image" src="https://github.com/user-attachments/assets/79c5adab-a4e4-42a0-b242-91174cae6bb0" />
+
 
 ---
 
