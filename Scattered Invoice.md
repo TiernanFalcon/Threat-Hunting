@@ -185,18 +185,18 @@ All findings were reconstructed through behavioral correlation of authentication
 
 ## Attack Timeline
 
-> **Analyst Note:** Two precise UTC timestamps were recoverable from `SigninLogs`: the first MFA denial event and the first successful authentication. Exact timestamps for rule creation and email sending are available in the workspace telemetry but were not captured in the flag answers. The timeline below uses confirmed sequence and exact timestamps where recovered.
+All timestamps UTC. Sourced directly from SigninLogs, CloudAppEvents, and EmailEvents telemetry.
 
 | Time (UTC) | Tactic | Action | Key Artifact |
 |---|---|---|---|
 | Pre-attack | Credential Access | Attacker obtains Mark Smith's password via infostealer credential market | infostealer |
-| ~21:00 | Initial Access | MFA push-bombing begins from `205.147.16.190` (NL); Smith receives repeated approval prompts | `50074`, `205.147.16.190` |
-| ~21:xx | Initial Access | Smith approves one MFA prompt to stop the notifications; attacker gains authenticated session | `m.smith@lognpacific.org`, Firefox 147.0 / Linux |
+| 21:54 | Initial Access | MFA push-bombing begins from `205.147.16.190` (NL); Smith receives repeated approval prompts | `50074`, `205.147.16.190` |
+| 21:59 | Initial Access | Smith approves one MFA prompt to stop the notifications; attacker gains authenticated session | `m.smith@lognpacific.org`, Firefox 147.0 / Linux |
 | Shortly after auth | Collection | First cloud action: `MailItemsAccessed` — attacker reads inbox to identify active threads | `MailItemsAccessed` |
-| Attack window | Persistence | Rule 1 created: forward financial keywords to `insights@duck.com` with `StopProcessingRules` | `New-InboxRule`, rule name `.` |
-| Attack window | Defense Evasion | Rule 2 created: delete security alert keywords silently | `New-InboxRule`, rule name `..` |
-| Attack window | Collection | Additional auth to OneDrive for Business; SharePoint Online session also established | `FileAccessed`, SharePoint Online |
-| Attack window | Impact | Thread-hijacked BEC email sent intra-org to `j.reynolds@lognpacific.org` with updated banking details | `RE: Invoice #INV-2026-0892` |
+| 22:02 | Persistence | Rule 1 created: forward financial keywords to `insights@duck.com` with `StopProcessingRules` | `New-InboxRule`, rule name `.` |
+| 22:03 | Defense Evasion | Rule 2 created: delete security alert keywords silently | `New-InboxRule`, rule name `..` |
+| 22:06 | Impact | Thread-hijacked BEC email sent intra-org to `j.reynolds@lognpacific.org` with updated banking details | `RE: Invoice #INV-2026-0892` |
+| 22:07 | Collection | Additional auth to OneDrive for Business; SharePoint Online session also established | `FileAccessed`, SharePoint Online |
 | 26 Feb 2026 | Impact | Reynolds processes £24,500 payment to attacker-controlled account | £24,500 |
 | 26 Feb 2026, morning | Discovery | Receiving bank flags transaction as suspicious; funds frozen; incident raised | IR-2026-0225-BEC |
 
